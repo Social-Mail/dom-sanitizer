@@ -6,12 +6,12 @@ function runInFrame(origin) {
             return;
         }
 
-        const { id, command, text } = e.data;
+        const { id, command, type, text } = e.data;
 
         try {
             switch(command) {
-                case "sanitize-svg":
-                    const result = sanitizeSvg(text);
+                case "sanitize":
+                    const result = process(text, type);
                     e.source.postMessage({ id, result });
                     break;
             }
@@ -21,9 +21,9 @@ function runInFrame(origin) {
 
     });
 
-    function sanitizeSvg(text) {
+    function process(text, type) {
         const parser = new DOMParser();
-        const dom = parser.parseFromString(text, "image/svg+xml");
+        const dom = parser.parseFromString(text, type);
 
         const ignore = eventNames();
 
@@ -191,7 +191,7 @@ function runInFrame(origin) {
 
 }
 
-export default async function sanitize(text: string) {
+export default async function sanitize(text: string, type: "image/svg+xml" | "text/html") {
     const frame = document.createElement("iframe");
     frame.style.left = "-5px";
     frame.style.top = "-5px";
@@ -227,7 +227,7 @@ export default async function sanitize(text: string) {
             }
         };
         window.addEventListener("message", eh);
-        frame.contentWindow.postMessage({ id,  command: "sanitize-svg", text });
+        frame.contentWindow.postMessage({ id,  command: "sanitize", text });
     });
 
 }
