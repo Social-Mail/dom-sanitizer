@@ -1,5 +1,5 @@
 
-function setup(origin) {
+function runInFrame(origin) {
 
     window.addEventListener("message", (e) => {
         if(e.origin !== origin) {
@@ -191,29 +191,43 @@ function setup(origin) {
 
 }
 
-export default class FrameWorker {
+export default async function sanitize(text: string) {
+    const frame = document.createElement("iframe");
+    frame.style.left = "-5px";
+    frame.style.top = "-5px";
+    frame.style.position = "fixed";
+    frame.style.width = "1px";
+    frame.style.height = "1px";
+    document.body.appendChild(frame);
 
-    frame: HTMLIFrameElement;
+    frame.srcdoc = `
+    <!doctype html>
+    <html>
+        <body>
+        <script>
+            (${runInFrame})(${location.href});
+        </script>
+        </body>
+    </html>
+    `;
 
-    constructor() {
-        this.frame = document.createElement("iframe");
-        this.frame.style.left = "-5px";
-        this.frame.style.top = "-5px";
-        this.frame.style.position = "fixed";
-        this.frame.style.width = "1px";
-        this.frame.style.height = "1px";
+    const id = crypto.randomUUID();
 
-        this.frame.srcdoc = `
-        <!doctype html>
-        <html>
-            <body>
-            <script>
-                (${setup})(${location.href});
-            </script>
-            </body>
-        </html>
-        `;
-
-    }
+    return new Promise((resolve, reject) => {
+        const eh = (e: MessageEvent) => {
+            const { id: rID, result, error } = e.data;
+            if (rID === id) {
+                window.removeEventListener("message", eh);
+                frame.remove();
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                resolve(result);
+            }
+        };
+        window.addEventListener("message", eh);
+        frame.contentWindow.postMessage({ id,  command: "sanitize-svg", text });
+    });
 
 }
