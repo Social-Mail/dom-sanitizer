@@ -1,0 +1,29 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "All Build",
+            "dependsOn":[
+                "TypeScript Build Watch",
+                "HTTP Server"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "TypeScript Build Watch",
+            "type": "shell",
+            "command": "npx tsc -watch"
+        },
+        {
+            "label": "HTTP Server",
+            "type": "shell",
+            "command": "npx http-server -c-1"
+        }
+    ]
+}
