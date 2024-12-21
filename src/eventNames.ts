@@ -1,5 +1,6 @@
 export default function eventNames() {
-    return new Set([
+
+    return (self as any).ignoreEventNames ??= new Set([
         'onabort',
         'onafterprint',
         'onauxclick',

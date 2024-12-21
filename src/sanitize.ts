@@ -1,6 +1,7 @@
 import eventNames from "./eventNames.js";
 import { flattenRecursiveIterator } from "./flattenRecursiveIterator.js";
-import recursiveElementIterator from "./recursiveDescendentIterator.js";
+import recursiveNodeIterator from "./recursiveNodeIterator.js";
+import recursiveElementIterator from "./recursiveElementIterator.js";
 import sanitizeDom from "./sanitizeDom.js";
 
 function runInFrame(origin) {
@@ -52,6 +53,7 @@ export default async function sanitize(text: string, type: "image/svg+xml" | "te
         <script>
             ${flattenRecursiveIterator};
             ${recursiveElementIterator};
+            ${recursiveNodeIterator};
             ${eventNames};
             ${sanitizeDom}
             (${runInFrame})(${ JSON.stringify(location.origin) });

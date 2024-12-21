@@ -1,6 +1,6 @@
 import eventNames from "./eventNames.js";
 import { flattenRecursiveIterator } from "./flattenRecursiveIterator.js";
-import recursiveElementIterator from "./recursiveDescendentIterator.js";
+import recursiveElementIterator from "./recursiveElementIterator.js";
 
 export default function sanitizeDom(text: string, type: DOMParserSupportedType) {
 
@@ -11,9 +11,7 @@ export default function sanitizeDom(text: string, type: DOMParserSupportedType) 
 
     const ri = recursiveElementIterator(dom.documentElement);
 
-    for (const element of flattenRecursiveIterator(ri) as any) {
-
-        console.log(element);
+    for (const element of flattenRecursiveIterator(ri)) {
 
         if (/^(script|iframe)$/i.test(element.tagName)) {
             element.remove();

@@ -1,4 +1,4 @@
-export function * flattenRecursiveIterator<T>(current:Iterator<{ value?: T, iterator?: any }>): Iterator<T> {
+export function * flattenRecursiveIterator<T>(current:Iterator<{ value?: T, iterator?: any }>): Iterable<T> {
     
     const stack = [];
 

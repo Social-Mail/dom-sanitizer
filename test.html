@@ -1,6 +1,43 @@
 <!doctype html>
 <html>
+
+    <head>
+        <style>
+            body {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr auto;
+            }
+
+            .src {
+                grid-row: 1;
+                grid-column: 1;
+            }
+
+            .dest {
+                grid-row: 1;
+                grid-column: 2;
+            }
+
+            button {
+                grid-row: 2;
+                place-self: center;
+            }
+        </style>
+    </head>
+
     <body>
+
+        <textarea class="src">
+
+        </textarea>
+
+        <textarea class="dest">
+
+        </textarea>
+
+        <button onclick="sanitizeSrc()">Sanitize</button>
+
         <script type="module">
             import sanitize from "./index.js";
 
@@ -8,8 +45,18 @@
             tag.textContent = `alert("hello")`;
 
             const svg = `<svg>${tag.outerHTML}<circle> <rect/> </circle></svg>`;
+            const src = document.querySelector(".src");
+            const dest = document.querySelector(".dest");
+            src.value = svg;
 
-            sanitize(svg , "image/svg+xml").then(alert);
+            window.sanitizeSrc = function sanitizeSrc() {
+
+                const svg = src.value;
+
+                sanitize(svg , "image/svg+xml").then((r) => {
+                    dest.value = r;
+                }, alert);
+            }
 
         </script>
     </body>
